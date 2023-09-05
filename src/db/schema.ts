@@ -55,7 +55,7 @@ export const verificationTokens = sqliteTable(
 export const pits = sqliteTable("pits", {
   id: text("id").notNull().primaryKey(),
   name: text("content").notNull(),
-  description: text("content").notNull(),
+  description: text("description").notNull(),
 });
 
 export const posts = sqliteTable("posts", {
@@ -68,6 +68,16 @@ export const posts = sqliteTable("posts", {
     .references(() => pits.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   content: text("content").notNull(),
+});
+
+export const subscriptions = sqliteTable("subscriptions", {
+  id: text("id").notNull().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  pitId: text("pit_id")
+    .notNull()
+    .references(() => pits.id, { onDelete: "cascade" }),
 });
 
 export type User = InferModel<typeof users>;

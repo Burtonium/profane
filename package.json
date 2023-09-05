@@ -1,5 +1,5 @@
 {
-  "name": "the-beth-stack",
+  "name": "profane",
   "module": "src/index.tsx",
   "type": "module",
   "scripts": {
