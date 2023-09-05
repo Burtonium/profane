@@ -1,6 +1,8 @@
-# THE BETH STACK
+# PROFANE
 
-_It may not be the BEST stack, but it is the BETH stack._
+_Profane is a forum where profanity is required to post_
+
+## Forked from [THE BETH STACK](https://github.com/ethanniser/the-beth-stack)
 
 ## [Bun](https://bun.sh/)
 
@@ -11,22 +13,6 @@ _It may not be the BEST stack, but it is the BETH stack._
 ## [HTMX](https://htmx.org/)
 
 Also: [typed-html](https://github.com/nicojs/typed-html), [tailwind-css](https://tailwindcss.com/), [drizzle](https://orm.drizzle.team/), [hyperscript](https://hyperscript.org/) and [fly.io](https://fly.io/)
-
-### ADDITIONAL STYLING OPTIONS:
-
-#### [twind](https://twind.dev/): check out the [twind branch](https://github.com/ethanniser/the-beth-stack/tree/twind)
-
-#### [unocss](https://unocss.dev/): check out the [unocss branch](https://github.com/ethanniser/the-beth-stack/tree/unocss)
-
-_really you can use whatever you like the most_
-
-### ADDITIONAL STYLING OPTIONS:
-
-#### File-based Routing: check out the [elysia-autoroutes branch](https://github.com/ethanniser/the-beth-stack/tree/file-based-routing)
-
-### VIEW THE LIVE DEMO AT [the-beth-stack.fly.dev](https://the-beth-stack.fly.dev/)
-
-## EACH STEP IN THE TUTORIAL IS [A BRANCH IN THIS REPO](https://github.com/ethanniser/the-beth-stack/branches)
 
 ### SO YOU CAN SEE THE CODE AT EACH STEP
 

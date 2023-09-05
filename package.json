@@ -3,11 +3,11 @@
   "module": "src/index.tsx",
   "type": "module",
   "scripts": {
-    "db:push": "bunx drizzle-kit push:sqlite",
-    "db:studio": "bunx drizzle-kit studio",
+    "db:push": "bun x drizzle-kit push:sqlite",
+    "db:studio": "bun x drizzle-kit studio",
     "dev": "concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\"",
-    "tw": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
-    "tw:dev": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
+    "tw": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
+    "tw:dev": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "latest",
@@ -21,6 +21,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^0.3.2",
     "@elysiajs/html": "^0.5.2",
     "@libsql/client": "^0.3.0",
     "drizzle-orm": "^0.27.2",
