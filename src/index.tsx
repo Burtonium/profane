@@ -1,8 +1,6 @@
 import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
 
 const app = new Elysia()
   .use(html())

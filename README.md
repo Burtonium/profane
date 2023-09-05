@@ -8,11 +8,9 @@ _Profane is a forum where profanity is required to post_
 
 ## [Elysia](https://elysiajs.com/)
 
-## [Turso](https://turso.tech/)
-
 ## [HTMX](https://htmx.org/)
 
-Also: [typed-html](https://github.com/nicojs/typed-html), [tailwind-css](https://tailwindcss.com/), [drizzle](https://orm.drizzle.team/), [hyperscript](https://hyperscript.org/) and [fly.io](https://fly.io/)
+Also: [typed-html](https://github.com/nicojs/typed-html), [tailwind-css](https://tailwindcss.com/), [hyperscript](https://hyperscript.org/) and [fly.io](https://fly.io/)
 
 ### SO YOU CAN SEE THE CODE AT EACH STEP
 
