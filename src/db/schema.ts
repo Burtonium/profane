@@ -1,4 +1,4 @@
-import { InferModel } from "drizzle-orm";
+import { InferModel, relations } from "drizzle-orm";
 import { integer, primaryKey, sqliteTable, text, } from "drizzle-orm/sqlite-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
@@ -71,14 +71,20 @@ export const posts = sqliteTable("posts", {
 });
 
 export const subscriptions = sqliteTable("subscriptions", {
-  id: text("id").notNull().primaryKey(),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   pitId: text("pit_id")
     .notNull()
     .references(() => pits.id, { onDelete: "cascade" }),
-});
+}, (t) => ({
+  pk: primaryKey(t.userId, t.pitId)
+}));
+
+
+export const accountsRelations = relations(accounts, ({ many }) => ({
+  accountToPits: many(subscriptions), 
+}));
 
 export type User = InferModel<typeof users>;
 export type Pit = InferModel<typeof pits>;
