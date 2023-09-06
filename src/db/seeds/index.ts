@@ -1,6 +1,5 @@
-import { QuerySqlToken, sql } from 'slonik';
+import { QuerySqlToken } from 'slonik';
 import createPool from '../index';
-import { pit, user } from '../schema';
 
 import users from './users';
 import pits from './pits';
@@ -20,9 +19,5 @@ import { ZodAny } from 'zod';
     }
     await timedQuery(users, 'Users');
     await timedQuery(pits, 'Pits');
-
-    const rows = await connection.many(sql.type(user)`SELECT * FROM users`);
-
-    console.log(rows);
   });
 })();

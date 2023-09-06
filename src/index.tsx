@@ -1,7 +1,8 @@
 import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
-import createDb from './db';
+import createPool from './db';
+import { helmet } from "elysia-helmet";
 
 const BaseHtml = ({ children }: elements.Children) => `
 <!DOCTYPE html>
@@ -20,8 +21,9 @@ ${children}
 `;
 
 (async () => {
-  const db = await createDb();
+  const db = await createPool();
   const app = new Elysia()
+    .use(helmet())
     .use(html())
     .get("/", ({ html }) =>
       html(

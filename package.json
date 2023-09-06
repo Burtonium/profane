@@ -28,6 +28,7 @@
     "@elysiajs/html": "^0.5.2",
     "camelize-ts": "^3.0.0",
     "elysia": "^0.5.22",
+    "elysia-helmet": "^1.0.1",
     "slonik": "^34.1.0",
     "zod": "^3.22.2"
   }
