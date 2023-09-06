@@ -5,6 +5,7 @@
   "scripts": {
     "migrate": "ts-node --project tsconfig.migrations.json node_modules/node-pg-migrate/bin/node-pg-migrate --migrations-dir=\"./src/db/migrations\"",
     "proxy": "fly proxy 1234 -a profanedb",
+    "seed": "bun run src/db/seeds/index.ts",
     "dev": "concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\"",
     "tw": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
     "tw:dev": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
@@ -25,7 +26,9 @@
   },
   "dependencies": {
     "@elysiajs/html": "^0.5.2",
+    "camelize-ts": "^3.0.0",
     "elysia": "^0.5.22",
-    "slonik": "^34.1.0"
+    "slonik": "^34.1.0",
+    "zod": "^3.22.2"
   }
 }

@@ -2,12 +2,15 @@ import { MigrationBuilder } from 'node-pg-migrate';
 
 export async function up(pgm: MigrationBuilder): Promise<void> {
   pgm.sql(`
-    ALTER TABLE USERS ADD COLUMN password_hash TEXT NOT NULL;
+    CREATE TABLE pits (
+      id VARCHAR(30) PRIMARY KEY,
+      description TEXT
+    );
   `)
 }
 
 export async function down(pgm: MigrationBuilder): Promise<void> {
   pgm.sql(`
-    ALTER TABLE USERS DROP COLUMN password_hash;
+    DROP TABLE pits;
   `)
 }
