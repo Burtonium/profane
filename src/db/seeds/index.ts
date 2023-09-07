@@ -1,9 +1,10 @@
-import { QuerySqlToken } from 'slonik';
-import createPool from '../index';
+import type { QuerySqlToken } from 'slonik';
+import type { ZodAny } from 'zod';
 
+import createPool from '../index';
 import users from './users';
 import pits from './pits';
-import { ZodAny } from 'zod';
+import posts from './posts';
 
 (async () => {
   console.time('Connected to db');
@@ -19,5 +20,6 @@ import { ZodAny } from 'zod';
     }
     await timedQuery(users, 'Users');
     await timedQuery(pits, 'Pits');
+    await timedQuery(posts, 'Posts');
   });
 })();

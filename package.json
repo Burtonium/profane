@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "migrate": "ts-node --project tsconfig.migrations.json node_modules/node-pg-migrate/bin/node-pg-migrate --migrations-dir=\"./src/db/migrations\"",
-    "proxy": "fly proxy 1234 -a profanedb",
+    "proxy": "(echo >/dev/tcp/localhost/15432) &>/dev/null && echo \"Proxy already running\" || fly proxy 15432:5432 -a profanedb",
+    "proxy:kill": "kill $(lsof -t -i:15432)",
     "seed": "bun run src/db/seeds/index.ts",
-    "dev": "concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\"",
+    "dev": "bun run concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\" ",
     "tw": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
     "tw:dev": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
   },
@@ -25,9 +26,11 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@elysiajs/html": "^0.5.2",
+    "@elysiajs/cookie": "^0.6.1",
+    "@elysiajs/html": "^0.6.0",
+    "@elysiajs/jwt": "^0.6.3",
     "camelize-ts": "^3.0.0",
-    "elysia": "^0.5.22",
+    "elysia": "^0.6.17",
     "elysia-helmet": "^1.0.1",
     "slonik": "^34.1.0",
     "zod": "^3.22.2"
