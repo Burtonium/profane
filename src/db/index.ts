@@ -1,7 +1,7 @@
-import { createPool } from "slonik";
+import { createPool as cp } from "slonik";
 import makeInterceptor from "./interceptor";
 
-export default () => createPool(
+const createPool = () => cp(
   process.env.DATABASE_URL!,
   {
     interceptors: [
@@ -10,3 +10,4 @@ export default () => createPool(
   }
 );
 
+export default createPool;

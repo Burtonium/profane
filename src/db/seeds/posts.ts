@@ -13,6 +13,13 @@ const posts: PostInsert[] = [
     content: '<p>Programming is all I hate my guy. Run while you can</p>',
     pitId: 'programming',
     userId: 'burtonium'
+  },
+
+  {
+    title: 'Hate me some programming',
+    content: '<p>Programming is all I hate my guy. Run while you can</p>',
+    pitId: 'programming',
+    userId: 'burtonium'
   }
 ]
 

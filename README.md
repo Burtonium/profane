@@ -10,6 +10,8 @@ _Profane is a forum where profanity is required to post_
 
 ## [HTMX](https://htmx.org/)
 
+## [Slonik]([Title](https://github.com/gajus/slonik))
+
 Also: [typed-html](https://github.com/nicojs/typed-html), [tailwind-css](https://tailwindcss.com/), [hyperscript](https://hyperscript.org/) and [fly.io](https://fly.io/)
 
 ### SO YOU CAN SEE THE CODE AT EACH STEP
