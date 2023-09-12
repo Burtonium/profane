@@ -1,8 +1,8 @@
 import * as elements from "typed-html";
 
-import { Elysia } from 'elysia'
-import { html } from '@elysiajs/html'
-import { helmet } from "elysia-helmet";
+import './dayjs';
+import { Elysia } from 'elysia';
+import { html } from '@elysiajs/html';
 import auth from './api/auth';
 import db from './db';
 import { fetchAllPosts } from "./db/queries";

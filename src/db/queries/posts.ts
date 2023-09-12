@@ -6,11 +6,13 @@ export const post = z.object({
   userId: z.string().max(30).min(3).regex(/^[a-z_]+$/),
   pitId: z.string().max(30).min(3).regex(/^[a-z_]+$/),
   title: z.string(),
-  content: z.string()
+  content: z.string(),
+  createdAt: z.number(),
+  updatedAt: z.number()
 });
 
 export type Post = z.infer<typeof post>;
-export type PostInsert = Omit<Post, 'id'>;
+export type PostInsert = Omit<Post, 'id' | 'createdAt' | 'updatedAt'>;
 
 export const insert = (post: PostInsert) => sql.typeAlias('void')`
   INSERT INTO posts
