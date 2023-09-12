@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sql } from "..";
 
 export const post = z.object({
   id: z.string().uuid(),
@@ -10,3 +11,9 @@ export const post = z.object({
 
 export type Post = z.infer<typeof post>;
 export type PostInsert = Omit<Post, 'id'>;
+
+export const insert = (post: PostInsert) => sql.typeAlias('void')`
+  INSERT INTO posts
+    (pit_id, user_id, title, content)
+  VALUES
+    (${post.pitId}, ${post.userId}, ${post.title}, ${post.content})`

@@ -7,7 +7,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
       id VARCHAR(30) NOT NULL PRIMARY KEY,
       email TEXT NOT NULL UNIQUE,
       email_verified BOOLEAN NOT NULL,
-      password_hash TEXT NOT NULL
+      hash TEXT NOT NULL,
+      salt TEXT NOT NULL
     );
   `)
 }

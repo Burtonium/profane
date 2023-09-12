@@ -1,7 +1,8 @@
-import { createPool as cp } from "slonik";
+import { createPool as cp, createSqlTag } from "slonik";
 import makeInterceptor from "./interceptor";
+import { z } from 'zod';
 
-const createPool = () => cp(
+const pool = await cp(
   process.env.DATABASE_URL!,
   {
     interceptors: [
@@ -10,4 +11,10 @@ const createPool = () => cp(
   }
 );
 
-export default createPool;
+export const sql = createSqlTag({
+  typeAliases: {
+    void: z.object({}).strict(),
+  }
+})
+
+export default pool;

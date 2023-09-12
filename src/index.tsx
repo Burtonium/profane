@@ -2,9 +2,8 @@ import * as elements from "typed-html";
 
 import { Elysia } from 'elysia'
 import { html } from '@elysiajs/html'
-import { cookie } from '@elysiajs/cookie';
 import { helmet } from "elysia-helmet";
-import { jwt } from '@elysiajs/jwt'
+import auth from './auth';
 
 
 const BaseHtml = ({ children }: elements.Children) => `
@@ -25,31 +24,7 @@ const BaseHtml = ({ children }: elements.Children) => `
 const app = new Elysia()
   .use(html())
   .use(helmet())
-  .use(
-    jwt({
-      name: 'jwt',
-      secret: process.env.JWT_SECRET!
-    })
-  )
-  .use(cookie())
-  .get('/sign/:name', async ({ jwt, cookie, setCookie, params }) => {
-    setCookie('auth', await jwt.sign(params), {
-        httpOnly: true,
-        maxAge: 7 * 86400,
-    })
-
-    return `Sign in as ${cookie.auth}`
-  })
-  .get('/profile', async ({ jwt, set, cookie: { auth } }) => {
-      const profile = await jwt.verify(auth)
-
-      if (!profile) {
-          set.status = 401
-          return 'Unauthorized'
-      }
-
-      return `Hello ${profile.name}`
-  })
+  .use(auth)
   .get("/", ({ html }) =>
     html(
       <BaseHtml>

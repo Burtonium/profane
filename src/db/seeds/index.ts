@@ -1,18 +1,16 @@
 import type { QuerySqlToken } from 'slonik';
 import type { ZodAny } from 'zod';
 
-import createPool from '../index';
+import db from '../index';
 import users from './users';
 import pits from './pits';
 import posts from './posts';
 
 (async () => {
   console.time('Connected to db');
-  const pool = await createPool();
-
-  pool.connect(async (connection) => {
+  db.connect(async (connection) => {
     console.timeEnd('Connected to db');
-    const timedQuery = async (query: QuerySqlToken<ZodAny>, label?: string) => {
+    const timedQuery = async (query: QuerySqlToken, label?: string) => {
       const timeLabel = `${label} inserted`;
       console.time(timeLabel);
       await connection.query(query);
@@ -20,6 +18,7 @@ import posts from './posts';
     }
     await timedQuery(users, 'Users');
     await timedQuery(pits, 'Pits');
-    await timedQuery(posts, 'Posts');
+    await Promise.all(posts.map((p, i) => timedQuery(p, `Post ${i}`)));
+    process.exit();
   });
 })();

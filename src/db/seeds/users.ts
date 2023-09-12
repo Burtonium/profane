@@ -1,9 +1,11 @@
-import { sql } from 'slonik';
+import { hashPassword } from '../../utils/crypto';
+import { insertUser } from '../schema/user';
 
-export default sql.unsafe`
-  INSERT INTO
-    users (id, email, email_verified, password_hash)
-  VALUES
-    ('burtonium', 'matt@burtonize.me', true, 'blahblah')
-  ON CONFLICT DO NOTHING;
-`;
+const query = insertUser({
+  id: 'burtonium',
+  email: 'matt@burtonize.me',
+  emailVerified: true,
+  ...(await hashPassword('blahblah'))
+});
+
+export default query;

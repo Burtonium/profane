@@ -7,6 +7,7 @@
     "proxy": "(echo >/dev/tcp/localhost/15432) &>/dev/null && echo \"Proxy already running\" || fly proxy 15432:5432 -a profanedb",
     "proxy:kill": "kill $(lsof -t -i:15432)",
     "seed": "bun run src/db/seeds/index.ts",
+    "seed:delete": "bun run src/db/seeds/delete.ts",
     "dev": "bun run concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\" ",
     "tw": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
     "tw:dev": "bun x tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
