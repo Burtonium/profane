@@ -3,8 +3,10 @@ import * as elements from "typed-html";
 import { Elysia } from 'elysia'
 import { html } from '@elysiajs/html'
 import { helmet } from "elysia-helmet";
-import auth from './auth';
-
+import auth from './api/auth';
+import db from './db';
+import { fetchAllPosts } from "./db/queries";
+import Posts from "./components/Posts";
 
 const BaseHtml = ({ children }: elements.Children) => `
   <!DOCTYPE html>
@@ -18,20 +20,29 @@ const BaseHtml = ({ children }: elements.Children) => `
     <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
     <link href="/styles.css" rel="stylesheet">
   </head>
-  ${children}
+  <body class="bg-slate-950">
+    ${children}
+  </body>
 `;
   
 const app = new Elysia()
   .use(html())
-  .use(helmet())
   .use(auth)
-  .get("/", ({ html }) =>
-    html(
+  .get("/", async ({ html }) => {
+    return html(
       <BaseHtml>
-        Hello world
+        <div
+          hx-get="/components/posts"
+          hx-swap="innerHTML"
+          hx-trigger="load"
+        />
       </BaseHtml>
     )
-  )
+  })
+  .get("/components/posts", async () => {
+    const posts = await db.many(fetchAllPosts());
+    return <Posts posts={posts} />;
+  })
   .get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))
   .listen(3000)
 

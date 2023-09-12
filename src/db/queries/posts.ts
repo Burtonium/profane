@@ -16,4 +16,8 @@ export const insert = (post: PostInsert) => sql.typeAlias('void')`
   INSERT INTO posts
     (pit_id, user_id, title, content)
   VALUES
-    (${post.pitId}, ${post.userId}, ${post.title}, ${post.content})`
+    (${post.pitId}, ${post.userId}, ${post.title}, ${post.content})`;
+
+export const fetchAllPosts = () => sql.type(post)`
+  SELECT * FROM posts ORDER BY created_at DESC LIMIT 100
+`

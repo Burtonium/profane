@@ -1,5 +1,5 @@
 import { hashPassword } from '../../utils/crypto';
-import { insertUser } from '../schema/user';
+import { insertUser } from '../queries/user';
 
 const query = insertUser({
   id: 'burtonium',

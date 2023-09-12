@@ -1,8 +1,7 @@
 import { Elysia } from "elysia";
-import auth from "../auth";
-import { findUserByUsername } from "../db/schema/user";
-import db from '../db';
-import setup from "../setup";
+import { findUserByUsername } from "../../db/queries/user";
+import db from '../../db';
+import setup from "../../setup";
 
 export const authGuard = (app: Elysia) =>
   app.use(setup)

@@ -1,10 +1,10 @@
 import { Elysia, t } from 'elysia';
-import db from './db';
-import { findUserByEmail, findUserByUsername, insertUser } from './db/schema/user';
-import setup from './setup';
-import { comparePassword, hashPassword } from './utils/crypto';
+import db from '../db';
+import { findUserByEmail, findUserByUsername, insertUser } from '../db/queries/user';
+import setup from '../setup';
+import { comparePassword, hashPassword } from '../utils/crypto';
 
-const auth = new Elysia({ name: 'auth' })
+export default new Elysia({ name: 'auth' })
   .use(setup)
   .group("/api", (app) => app
     .post(
@@ -105,4 +105,3 @@ const auth = new Elysia({ name: 'auth' })
     )
   );
 
-export default auth;

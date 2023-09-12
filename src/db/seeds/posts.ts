@@ -1,4 +1,4 @@
-import { insert, type PostInsert } from '../schema/post'
+import { insert, type PostInsert } from '../queries/posts'
 
 const posts: PostInsert[] = [
   {
