@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "migrate": "ts-node --project tsconfig.migrations.json node_modules/node-pg-migrate/bin/node-pg-migrate --migrations-dir=\"./src/db/migrations\"",
-    "proxy": "(echo >/dev/tcp/localhost/15432) &>/dev/null && echo \"Proxy already running\" || fly proxy 15432:5432 -a profanedb",
+    "proxy": "fly proxy 15432:5432 -a profanedb",
     "proxy:kill": "kill $(lsof -t -i:15432)",
     "seed": "bun run src/db/seeds/index.ts",
     "seed:delete": "bun run src/db/seeds/delete.ts",

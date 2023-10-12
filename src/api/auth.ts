@@ -8,7 +8,7 @@ export default new Elysia({ name: 'auth' })
   .use(setup)
   .group("/api", (app) => app
     .post(
-      "/signup",
+      "/register",
       async ({ body, set }) => {
         const { email, password, username } = body;
         db.connect(async (connection) => {
@@ -58,26 +58,17 @@ export default new Elysia({ name: 'auth' })
       "/login",
       async ({ body, set, jwt, setCookie }) => {
         const { username, password } = body;
-        // verify email/username
         const user = await db.maybeOne(findUserByUsername(username));
 
         if (!user) {
           set.status = 400;
-          return {
-            success: false,
-            data: null,
-            message: "Invalid credentials",
-          };
+          return "Invalid credentials";
         }
 
         const match = await comparePassword(password, user.salt, user.hash);
         if (!match) {
           set.status = 400;
-          return {
-            success: false,
-            data: null,
-            message: "Invalid credentials",
-          };
+          return "Invalid credentials";
         }
 
         const accessToken = await jwt.sign({
@@ -89,12 +80,9 @@ export default new Elysia({ name: 'auth' })
           path: "/",
         });
 
+        set.headers['HX-Redirect'] = '/';
 
-        return {
-          success: true,
-          data: null,
-          message: "Account login successfully",
-        };
+        return "Account login successfully";
       },
       {
         body: t.Object({

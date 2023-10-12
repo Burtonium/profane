@@ -15,8 +15,8 @@ const Posts = ({ posts }: { posts: Readonly<Post[]> }) => {
           </h3>
           <p>
             Posted by
-            <a class="text-orange-300 relative z-20" href={`/users/${post.userId}`}>{post.userId}</a>
-            in <a class="text-orange-300 relative z-20" href={`/pits/${post.pitId}`}>{post.pitId}</a>
+            <a class="text-primary relative z-20" href={`/users/${post.userId}`}>{post.userId}</a>
+            in <a class="text-primary relative z-20" href={`/pits/${post.pitId}`}>{post.pitId}</a>
             about {dayjs().to(post.createdAt)}.
           </p>
         </div>
