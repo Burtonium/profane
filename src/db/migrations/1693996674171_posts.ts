@@ -5,8 +5,8 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
     CREATE TABLE posts (
       id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-      pit_id VARCHAR(30) REFERENCES pits (id),
-      user_id VARCHAR(30) REFERENCES users (id),
+      pit_id VARCHAR(30) NOT NULL REFERENCES pits (id) ON DELETE CASCADE,
+      user_id VARCHAR(30) NOT NULL REFERENCES users (id) ON DELETE CASCADE,
       title TEXT NOT NULL,
       content TEXT NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

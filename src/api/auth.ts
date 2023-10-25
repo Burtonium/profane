@@ -10,8 +10,14 @@ export default new Elysia({ name: 'auth' })
     .post(
       "/register",
       async ({ body, set }) => {
-        const { email, password, username } = body;
-        db.connect(async (connection) => {
+        const { email, password, confirm_password, username } = body;
+
+        if (password !== confirm_password) {
+          set.status = 400;
+          return "Password confirmation must match.";
+        }
+
+        return db.connect(async (connection) => {
           const [emailExists, usernameExists] = await Promise.all([
             connection.exists(findUserByEmail(email)),
             connection.exists(findUserByUsername(username)),
@@ -19,38 +25,35 @@ export default new Elysia({ name: 'auth' })
 
           if (emailExists || usernameExists) {
             set.status = 400;
-            return {
-              success: false,
-              data: null,
-              message: `${emailExists ? 'Email address' : ''} ${usernameExists ? 'Username' : ''} is already in use.`
-            };
+            return `${emailExists ? 'Email address' : ''} ${usernameExists ? 'Username' : ''} is already in use.`;
           }
 
           const { hash, salt } = await hashPassword(password);
 
-          const newUser = await connection.one(insertUser({
-            email,
-            emailVerified: false,
-            hash,
-            salt,
-            id: username,
-          }));
+          try {
+            await connection.query(insertUser({
+              id: username,
+              email,
+              emailVerified: false,
+              hash,
+              salt,
+            }));
+          } catch (e) {
+            set.status = 500;
+            return "Something went wrong. Please try again later."
+          }
+
+          set.status = 201;
   
-          return {
-            success: true,
-            message: "Account created",
-            data: {
-              user: newUser,
-            },
-          };
-        })
+          return "Account created. Sign in now.";
+        });
       },
       {
         body: t.Object({
-          name: t.String(),
-          email: t.String(),
-          username: t.String(),
+          email: t.String({ pattern: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$', default: '' }),
+          username: t.String({ pattern: '^[1-9a-z_]+$', default: '' }),
           password: t.String(),
+          confirm_password: t.String()
         }),
       }
     )
@@ -58,11 +61,11 @@ export default new Elysia({ name: 'auth' })
       "/login",
       async ({ body, set, jwt, setCookie }) => {
         const { username, password } = body;
-        const user = await db.maybeOne(findUserByUsername(username));
+        const user = await db.maybeOne(findUserByUsername(username)) || await db.maybeOne(findUserByEmail(username));
 
         if (!user) {
           set.status = 400;
-          return "Invalid credentials";
+          return "User not found";
         }
 
         const match = await comparePassword(password, user.salt, user.hash);
@@ -76,7 +79,7 @@ export default new Elysia({ name: 'auth' })
         });
 
         setCookie("auth", accessToken, {
-          maxAge: 24 * 60 * 60, // 24 hours
+          maxAge: 24 * 60 * 60,
           path: "/",
         });
 
@@ -90,6 +93,21 @@ export default new Elysia({ name: 'auth' })
           password: t.String(),
         }),
       }
+    )
+    .post(
+      "/logout",
+      async ({ set, cookie, setCookie }) => {
+        // deleteCookie is bugged, yay
+        // https://github.com/elysiajs/elysia-cookie/issues/6
+        setCookie("auth", '', {
+          maxAge: 0, // expires immediately
+          path: "/",
+        });
+        delete cookie.auth;
+
+        set.headers['HX-Redirect'] = '/';
+        return 'Logged out.';
+      },
     )
   );
 

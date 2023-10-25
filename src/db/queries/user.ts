@@ -2,7 +2,7 @@ import { z } from "zod";
 import { sql } from '../index';
 
 export const schema = z.object({
-  id: z.string().max(30).min(3).regex(/^[a-z_]+$/),
+  id: z.string().max(30).min(3).regex(/^[a-z1-9_]+$/),
   email: z.string().email(),
   emailVerified: z.boolean(),
   hash: z.string(),
@@ -19,5 +19,4 @@ export const insertUser = (user: User) => sql.type(schema)`
     users (id, email, email_verified, hash, salt)
   VALUES
     (${user.id}, ${user.email}, ${user.emailVerified}, ${user.hash}, ${user.salt})
-  RETURNING *
 `;

@@ -13,13 +13,13 @@ const LoginForm = () => (
       <div>
         <Input label='Password' name='password' required type="password" />
       </div>
-      <div class="text-error" id="error-response" />
+      <div class="text-error text-center" id="error-response" />
       <div class="text-center space-y-4">
         <button type="submit" class="btn">
           Sign In
         </button>
       </div>
-      <p class="text-sm text-center text-muted">If your account 404'd on you you should <a href="/register">Register</a>probably.</p>
+      <p class="text-sm text-center text-muted">If your account 404'd on you you should <a href="/register">Register</a>, probably.</p>
     </form>
   </div>
 );
