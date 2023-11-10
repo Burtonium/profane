@@ -1,4 +1,4 @@
-import { insert, type PostInsert } from '../queries/posts'
+import { insertPost, type PostInsert } from '../queries/posts'
 
 const posts: PostInsert[] = [
   {
@@ -22,4 +22,6 @@ const posts: PostInsert[] = [
   }
 ]
 
-export default posts.map(insert);
+const inserts = posts.map(insert);
+
+export default inserts;

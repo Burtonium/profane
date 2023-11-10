@@ -19,7 +19,7 @@ export default (): Interceptor => {
       if (!validationResult.success) {
         throw new SchemaValidationError(
           actualQuery,
-          JSON.stringify(row),
+          row,
           validationResult.error.issues,
         );
       }

@@ -28,13 +28,13 @@ export const withUser = (app: Elysia) =>
           return "Unauthorized";
         }
 
-        const user = await db.query(findUserByUsername(payload.username));
+        const user = await db.maybeOne(findUserByUsername(payload.username));
         if (!user) {
           set.status = 401;
           return "Unauthorized";
         }
 
         return {
-          user,
+          user: user || undefined,
         };
     });

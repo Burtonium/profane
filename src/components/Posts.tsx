@@ -20,7 +20,7 @@ const Posts = ({ posts }: { posts?: Readonly<Post[]> }) => {
             about {dayjs().to(post.createdAt)}.
           </p>
         </div>
-      )) : <div class="p-5">No posts here yet...</div>}
+      )) : <div class="p-5">No posts here yet...<a href="/post">Post something?</a></div>}
     </div>
   );
 }

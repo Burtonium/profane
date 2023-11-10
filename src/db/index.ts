@@ -14,6 +14,7 @@ const pool = await cp(
 export const sql = createSqlTag({
   typeAliases: {
     void: z.object({}).strict(),
+    id: z.object({ id: z.string() }).strict(),
   }
 })
 

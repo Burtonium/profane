@@ -1,15 +1,16 @@
 import * as elements from "typed-html";
 
 import './dayjs';
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 import { html } from '@elysiajs/html';
-import auth from './api/auth';
+import api from './api';
 import db from './db';
-import { Pit, fetchAllPosts, fetchMyPosts, fetchPit, fetchPitPosts, fetchSubscriptionsPosts } from './db/queries';
+import { Pit, fetchAllPosts, fetchMyPosts, fetchPit, fetchAllPits, fetchPitPosts, fetchSubscriptionsPosts } from './db/queries';
 import Posts from './components/Posts';
 import Header from './components/Header';
 import LoginForm from "./components/LoginForm";
 import RegisterForm from './components/RegisterForm';
+import PostForm from './components/PostForm';
 import { withUser } from './api/middlewares/auth';
 import { User } from "./db/queries/user";
 
@@ -23,6 +24,7 @@ const MainLayout = ({ children, user, pit }: elements.Children & { user?: User, 
       <script src="https://unpkg.com/htmx.org@1.9.3"></script>
       <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+      <script src="https://cdn.tiny.cloud/1/stdoy1p9onuz76vu2e9826v43a453ufdkk4db83cn7ce8odx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Quicksand&family=Roboto+Flex:wght@100;400;600&display=swap" rel="stylesheet"> 
@@ -32,12 +34,22 @@ const MainLayout = ({ children, user, pit }: elements.Children & { user?: User, 
       ${<Header pit={pit} user={user} />}
       ${children}
     </body>
+    <script>
+      tinymce.init({
+        selector: '.editor',
+        menubar: false,
+        skin: 'oxide-dark',
+        content_css: 'dark',
+        plugins: 'anchor autolink codesample emoticons image link lists media table visualblocks checklist export formatpainter pageembed powerpaste typography inlinecss',
+        toolbar: 'blocks | bold italic underline strikethrough | link table  | checklist numlist bullist | emoticons | removeformat',
+      });
+    </script>
   </html>
 `;
   
 const app = new Elysia()
   .use(html())
-  .use(auth)
+  .use(api)
   .use(withUser)
   .get("/", async ({ html, user }) => {
     return html(
@@ -64,6 +76,21 @@ const app = new Elysia()
       <MainLayout user={user}>
         <div class="flex justify-center mt-10">
           <RegisterForm />
+        </div>
+      </MainLayout>
+    )
+  })
+  .get("/post", async ({ html, user, set }) => {
+    if (!user) {
+      set.redirect = '/';
+      return 'Redirecting...'
+    }
+
+    const pits = await db.many(fetchAllPits());
+    return html(
+      <MainLayout user={user}>
+        <div class="flex justify-center mt-10">
+          <PostForm pits={pits} user={user} />
         </div>
       </MainLayout>
     )

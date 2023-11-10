@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { sql } from '../index';
+import { sql } from '..';
 
 export const schema = z.object({
   id: z.string().max(30).min(3).regex(/^[a-z1-9_]+$/),
