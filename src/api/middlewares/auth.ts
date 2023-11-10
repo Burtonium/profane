@@ -13,28 +13,3 @@ export const withUser = (app: Elysia) =>
         user: user || undefined,
       };
   });
-
-  export const authGuard = (app: Elysia) =>
-    app.use(setup)
-      .derive(async ({ cookie, jwt, set }) => {
-        if (!cookie.auth) {
-          set.status = 401;
-          return "Unauthorized";
-        }
-        
-        const payload = await jwt.verify(cookie.auth);
-        if (!payload) {
-          set.status = 401;
-          return "Unauthorized";
-        }
-
-        const user = await db.maybeOne(findUserByUsername(payload.username));
-        if (!user) {
-          set.status = 401;
-          return "Unauthorized";
-        }
-
-        return {
-          user: user || undefined,
-        };
-    });

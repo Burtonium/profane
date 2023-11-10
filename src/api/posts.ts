@@ -1,7 +1,7 @@
 import { Elysia, t } from 'elysia';
 import DOMPurify from 'isomorphic-dompurify';
 import db from '../db';
-import { authGuard } from './middlewares/auth';
+import { withUser } from './middlewares/auth';
 import setup from '../setup';
 import { insertPost, type PostInsert }  from '../db/queries/posts';
 import {
@@ -27,14 +27,19 @@ const validateContent = (content: string) => matcher.hasMatch(content);
 
 const postsApi = new Elysia({ name: 'posts' })
   .use(setup)
-  .use(authGuard)
+  .use(withUser)
   .post(
     '/posts',
     async ({ body, set, user }) => {
-      const hasBadWords = validateContent(body.content);
+      if (!user) {
+        set.redirect = '/';
+        return 'Unauthorized';
+      }
+
+      const hasBadWords = validateContent(body.title) || validateContent(body.content);
       if (!hasBadWords) {
         set.status = 400;
-        return 'Needs more profanity. Try a fuck or ten.'
+        return 'Needs more profanity.'
       }
 
 

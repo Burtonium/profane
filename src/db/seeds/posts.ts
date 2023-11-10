@@ -22,6 +22,6 @@ const posts: PostInsert[] = [
   }
 ]
 
-const inserts = posts.map(insert);
+const inserts = posts.map(insertPost);
 
 export default inserts;

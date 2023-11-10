@@ -3,3 +3,5 @@ declare namespace JSX {
     _?: string;
   }
 }
+
+declare module 'obscenity';

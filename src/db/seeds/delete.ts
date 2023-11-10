@@ -1,5 +1,3 @@
-import type { QuerySqlToken } from 'slonik';
-import type { ZodAny } from 'zod';
 import assert from 'assert';
 
 import db, { sql } from '../index';
