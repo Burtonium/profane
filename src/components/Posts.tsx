@@ -9,7 +9,7 @@ const Posts = ({ posts }: { posts?: Readonly<Post[]> }) => {
       {posts ? posts.map((post) => (
         <div
           class="relative px-5 py-3 border-b border-slate-800 bg-slate-900 text-white hover:bg-slate-800">
-          <a class="block absolute z-10 w-full h-full" href={`/posts/${post.id}`} />
+          <a class="block absolute z-10 w-full h-full" href={`/posts/${post.pitId}/${post.id}`} />
           <h3 class="text-lg font-bold">
             {post.title}
           </h3>

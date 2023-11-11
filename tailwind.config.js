@@ -3,7 +3,8 @@ export default {
   content: ["./src/**/*.{html,tsx}"],
   theme: {
     fontFamily: {
-      'main': ['Oswald', 'sans-serif'],
+      'brand': ['Oswald', 'sans-serif'],
+      'title': ['Roboto Condensed', 'sans-serif'],
       'sans': ['Quicksand', 'sans-serif']
     },
     extend: {

@@ -3,6 +3,7 @@ import db from '../db';
 import { findUserByEmail, findUserByUsername, insertUser } from '../db/queries/user';
 import setup from '../setup';
 import { comparePassword, hashPassword } from '../utils/crypto';
+import { subscribeToAllPits } from '../db/queries/subscriptions';
 
 export default new Elysia({ name: 'auth' })
   .use(setup)
@@ -37,7 +38,10 @@ export default new Elysia({ name: 'auth' })
             hash,
             salt,
           }));
+
+          await connection.query(subscribeToAllPits(username))
         } catch (e) {
+          console.error(e);
           set.status = 500;
           return "Something went wrong. Please try again later."
         }

@@ -29,6 +29,10 @@ export const insertPost = (post: PostInsert) => sql.typeAlias('id')`
   RETURNING id
 `;
 
+export const fetchPost = (postId: string) => sql.type(post)`
+  SELECT * FROM posts WHERE id = ${postId} LIMIT 1
+`
+
 export const fetchAllPosts = () => sql.type(post)`
   SELECT * FROM posts ORDER BY created_at DESC LIMIT 100
 `
@@ -38,9 +42,9 @@ export const fetchMyPosts = (username: string) => sql.type(post)`
 `
 
 export const fetchSubscriptionsPosts = (username: string) => sql.type(post)`
-  SELECT * FROM posts p
-  JOIN subscriptions s
-  ON p.pit_id = p.pit_id
+  SELECT * FROM subscriptions s
+  JOIN posts p
+  ON p.pit_id = s.pit_id
   WHERE s.user_id = ${username} ORDER BY created_at DESC LIMIT 100
 `
 

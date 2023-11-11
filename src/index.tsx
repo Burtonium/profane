@@ -5,14 +5,15 @@ import { Elysia } from 'elysia';
 import { html } from '@elysiajs/html';
 import api from './api';
 import db from './db';
-import { Pit, fetchAllPosts, fetchMyPosts, fetchPit, fetchAllPits, fetchPitPosts, fetchSubscriptionsPosts } from './db/queries';
+import { Pit, fetchAllPosts, fetchMyPosts, fetchPit, fetchAllPits, fetchPitPosts, fetchSubscriptionsPosts, fetchPost } from './db/queries';
 import Posts from './components/Posts';
 import Header from './components/Header';
 import LoginForm from "./components/LoginForm";
 import RegisterForm from './components/RegisterForm';
 import PostForm from './components/PostForm';
-import { withUser } from './api/middlewares/auth';
+import { userRequired, withUser } from './api/middlewares/auth';
 import { User } from "./db/queries/user";
+import PostView from "./components/PostView";
 
 const MainLayout = ({ children, user, pit }: elements.Children & { user?: User, pit?: Pit }) => `
   <!DOCTYPE html>
@@ -27,7 +28,7 @@ const MainLayout = ({ children, user, pit }: elements.Children & { user?: User, 
       <script src="https://cdn.tiny.cloud/1/stdoy1p9onuz76vu2e9826v43a453ufdkk4db83cn7ce8odx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Quicksand&family=Roboto+Flex:wght@100;400;600&display=swap" rel="stylesheet"> 
+      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Quicksand:wght@400&family=Roboto+Condensed:wght@500&display=swap" rel="stylesheet"> 
       <link href="/styles.css" rel="stylesheet">
     </head>
     <body class="bg-slate-950">
@@ -62,10 +63,14 @@ const app = new Elysia()
       </MainLayout>
     )
   })
-  .get("/login", async ({ html, user }) => {
+  .get("/login", async ({ html, user, set }) => {
+    if (user) {
+      set.redirect = '/';
+      return 'Redirecting';
+    }
     return html(
       <MainLayout user={user}>
-        <div class="flex justify-center mt-10">
+        <div class="flex justify-center mt-5">
           <LoginForm />
         </div>
       </MainLayout>
@@ -74,39 +79,60 @@ const app = new Elysia()
   .get("/register", async ({ html, user }) => {
     return html(
       <MainLayout user={user}>
-        <div class="flex justify-center mt-10">
+        <div class="flex justify-center mt-5">
           <RegisterForm />
         </div>
       </MainLayout>
     )
   })
-  .get("/post", async ({ html, user, set }) => {
-    if (!user) {
-      set.redirect = '/';
-      return 'Redirecting...'
-    }
-
-    const pits = await db.many(fetchAllPits());
-    return html(
-      <MainLayout user={user}>
-        <div class="flex justify-center mt-10">
-          <PostForm pits={pits} user={user} />
-        </div>
-      </MainLayout>
-    )
-  })
   .get("/pits/:id", async ({ html, user, params: { id }, set }) => {
-    const pit = await db.maybeOne(fetchPit(id));
+    const pit = await db.maybeOne(fetchPit(id, user?.id));
 
     if (!pit) {
-      set.status = 404;
+      set.redirect = '/404';
       return 'Cant find that pit.'
     }
 
     const posts = await db.many(fetchPitPosts(id)).catch(() => undefined);
     return html(
       <MainLayout pit={pit} user={user}>
-        <Posts posts={posts} />
+        <div>
+          <div class="px-5 mb-5 space-y-5">
+            <p>
+              {pit.description}
+            </p>
+            {user ? (
+              <button
+                class="btn"
+                hx-get={`/components/subscription-button?pitId=${id}`}
+                hx-swap="outerHTML"
+                hx-trigger="load" />
+            ) : ''}
+          </div>
+          <Posts posts={posts} />
+        </div>
+      </MainLayout>
+    );
+  })
+  .get("/posts/:pitId/:postId", async ({ html, user, params: { postId, pitId }, set }) => {
+    const pit = await db.maybeOne(fetchPit(pitId));
+    const post = await db.maybeOne(fetchPost(postId));
+
+    if (!pit) {
+      set.redirect = '/404';
+      return 'Cant find that pit.'
+    }
+
+    if (!post) {
+      set.status = 404;
+      return 'Cant find that post';
+    }
+
+    return html(
+      <MainLayout pit={pit} user={user}>
+        <div class="mt-5">
+          <PostView post={post} />
+        </div>
       </MainLayout>
     );
   })
@@ -114,8 +140,8 @@ const app = new Elysia()
     "/components/posts",
     async () => {
       const posts = await db.many(fetchAllPosts())
-        .catch(() => undefined);
-      return <Posts posts={posts} />;
+        .catch((e) => console.error(e));
+      return posts && <Posts posts={posts} />;
     }
   )
   .get(
@@ -125,23 +151,74 @@ const app = new Elysia()
         set.status = 401;
         return 'Unauthorized';
       }
-      const posts = await db.many(fetchSubscriptionsPosts(user.id))
-        .catch(() => undefined);
+
+      const posts = await db.many(fetchSubscriptionsPosts(user.id));
+
       return <Posts posts={posts} />;
     }
   )
   .get(
-    "/components/posts/mine",
-    async ({ user, set }) => {
-      if (!user) {
-        set.status = 401;
-        return 'Unauthorized';
+    "/components/subscription-button",
+    async ({ user, set, query: { pitId } }) => {
+      if (!pitId) {
+        set.status = 404;
+        return 'Pit not found'
       }
+      const pit = await db.maybeOne(fetchPit(pitId, user?.id));
+
+      return pit?.subscribed
+        ? <button class="btn" hx-post={`/api/pits/${pitId}/unsubscribe`}>Unsubscribe</button>
+        : <button class="btn" hx-post={`/api/pits/${pitId}/subscribe`}>Subscribe</button>;
+    }
+  )
+  .get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))
+  .get("/404", ({ user }) => (
+    <MainLayout user={user}>
+      <div class="text-center mt-8">
+        <h1 class="text-[8rem] font-bold">404</h1>
+        <p class="text-2xl">We couldn't find that, sorry. <a href="/">Go home?</a></p>
+      </div>
+    </MainLayout>
+  ))
+  .get("*", ({ set }) => {
+    set.redirect = '/404';
+  })
+  .use(userRequired)
+  .get("/pits/:id/post", async ({ html, user, params: { id }, set }) => {
+    const pit = await db.maybeOne(fetchPit(id));
+
+    if (!pit) {
+      set.status = 404;
+      return 'Cant find that pit.'
+    }
+
+    const pits = await db.many(fetchAllPits());
+
+    return html(
+      <MainLayout pit={pit} user={user}>
+        <div class="flex justify-center mt-5">
+          <PostForm currentPit={pit} pits={pits} user={user} />
+        </div>
+      </MainLayout>
+    );
+  })
+  .get(
+    "/components/posts/mine",
+    async ({ user }) => {
       const posts = await db.many(fetchMyPosts(user.id)).catch(() => undefined);
       return <Posts posts={posts} />;
     }
   )
-  .get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))
+  .get("/post", async ({ html, user }) => {
+    const pits = await db.many(fetchAllPits());
+    return html(
+      <MainLayout user={user}>
+        <div class="flex justify-center mt-5">
+          <PostForm pits={pits} user={user} />
+        </div>
+      </MainLayout>
+    )
+  })
   .listen(3000)
 
 console.log(
