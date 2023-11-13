@@ -98,7 +98,7 @@ const app = new Elysia()
       <MainLayout pit={pit} user={user}>
         <div>
           <div class="px-5 mb-5 space-y-5">
-            <p>
+            <p class="border-l-4 border-slate-400 pl-3">
               {pit.description}
             </p>
             {user ? (
@@ -167,8 +167,22 @@ const app = new Elysia()
       const pit = await db.maybeOne(fetchPit(pitId, user?.id));
 
       return pit?.subscribed
-        ? <button class="btn" hx-post={`/api/pits/${pitId}/unsubscribe`}>Unsubscribe</button>
-        : <button class="btn" hx-post={`/api/pits/${pitId}/subscribe`}>Subscribe</button>;
+        ? <button
+            class="btn"
+            hx-swap="outerHTML"
+            hx-get={`/components/subscription-button?pitId=${pitId}`}
+            onclick={`fetch('/api/pits/${pitId}/unsubscribe', { method: "POST" })`}
+          >
+              Unsubscribe
+          </button>
+        : <button
+          class="btn"
+          hx-swap="outerHTML"
+          hx-get={`/components/subscription-button?pitId=${pitId}`}
+          onclick={`fetch('/api/pits/${pitId}/subscribe', { method: "POST" })`}
+          >
+            Subscribe
+          </button>;
     }
   )
   .get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))

@@ -3,7 +3,6 @@ import * as elements from 'typed-html';
 import dayjs from 'dayjs';
 
 const PostView = ({ post }: { post: Post } ) => {
-  
   return (
     <div class="bg-slate-900 shadow-md px-8 py-8 pb-8 mb-2 space-y-6">
       <h2 class="text-3xl font-extrabold">{post.title}</h2>

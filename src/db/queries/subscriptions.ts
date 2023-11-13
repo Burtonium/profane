@@ -12,5 +12,19 @@ export type Subscription = z.infer<typeof subscription>;
 export const subscribeToAllPits = (userId: string) => sql.typeAlias('void')`
   INSERT INTO SUBSCRIPTIONS
     (user_id, pit_id)
-  SELECT ${userId}, id FROM pits
+  SELECT ${userId}, id
+  FROM pits
+`
+
+export const subscribeToPit = (userId: string, pitId: string) => sql.typeAlias('void')`
+  INSERT INTO SUBSCRIPTIONS
+    (user_id, pit_id)
+  VALUES
+    (${userId}, ${pitId})
+  ON CONFLICT DO NOTHING
+`
+export const unsubscribeToPit = (userId: string, pitId: string) => sql.typeAlias('void')`
+  DELETE FROM SUBSCRIPTIONS
+  WHERE
+    user_id = ${userId} AND pit_id = ${pitId}
 `
