@@ -73,7 +73,6 @@ const postsApi = new Elysia({ name: 'posts' })
       let id;
       try {
         id = (await db.one(insertPost(sanitizePost(body)))).id;
-        console.log(id);
       } catch (e) {
         set.status = 500;
         console.error(e);
