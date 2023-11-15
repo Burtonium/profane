@@ -23,7 +23,6 @@ const MainLayout = ({ children, user, pit }: elements.Children & { user?: User, 
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>PROFANE</title>
       <script src="https://unpkg.com/htmx.org@1.9.3"></script>
-      <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
       <script src="https://cdn.tiny.cloud/1/stdoy1p9onuz76vu2e9826v43a453ufdkk4db83cn7ce8odx/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
       <link rel="preconnect" href="https://fonts.googleapis.com">
